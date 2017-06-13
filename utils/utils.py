@@ -14,7 +14,7 @@ from learners.naive_bayes_gaussian import NaiveBayes as GaussianNB
 from learners.naive_bayes_binary import NaiveBayes as BinaryNB
 from learners.perceptron import Perceptron
 from learners.random_stump import RandomStump
-from learners.decision_stump import DecisionStump
+#from learners.decision_stump import DecisionStump
 from learners.decision_tree import DecisionTree
 from learners.knn import kNN
 from learners.histogram import RNB

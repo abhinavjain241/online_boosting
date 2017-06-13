@@ -1,6 +1,7 @@
 from random import shuffle
 from collections import defaultdict
 import numpy as np
+from sklearn.metrics import f1_score, accuracy_score
 
 
 def test(Booster, Learner, data, m, trials=1, should_shuffle=True):
@@ -10,11 +11,10 @@ def test(Booster, Learner, data, m, trials=1, should_shuffle=True):
             shuffle(data)
         results.append(run_test(Booster, Learner, data, m))
     results = zip(*results)
-
     def avg(x):
         return sum(x) / len(x)
-    return (map(avg, zip(*results[0])), map(avg, zip(*results[1])))
-
+    #return map(avg, zip(*results[0])), map(avg, zip(*results[1])), results[2], results[3]
+    return results[0], results[1], results[2], results[3], results[4]
 
 def run_test(Booster, Learner, data, m):
     classes = np.unique(np.array([y for (x, y) in data]))
@@ -23,20 +23,39 @@ def run_test(Booster, Learner, data, m):
     correct_booster = 0.0
     correct_baseline = 0.0
     t = 0
+    booster_scores = []
+    baseline_scores = []
     performance_booster = []
     performance_baseline = []
+    predict_booster = []
+    predict_baseline = []
+    booster_accuracy_score = []
+    true_labels = []
     for (features, label) in data:
-        if predictor.predict(features) == label:
+        boost_pred = predictor.predict(features)
+        if boost_pred == label:
+        #if predictor.predict(features) == label:
             correct_booster += 1
+        predict_booster.append(boost_pred)
         predictor.update(features, label)
-        if baseline.predict(features) == label:
+        base_pred = baseline.predict(features)
+        if base_pred == label:
+        #if baseline.predict(features) == label:
             correct_baseline += 1
+        predict_baseline.append(base_pred)    
         baseline.partial_fit(features, label)
         t += 1
+        true_labels.append(label)
         performance_booster.append(correct_booster / t)
         performance_baseline.append(correct_baseline / t)
+        boosterscore = f1_score(true_labels, predict_booster)
+        baselinescore = f1_score(true_labels, predict_baseline)
+        booster_accuracy_score.append(accuracy_score(true_labels, predict_booster))
+        booster_scores.append(boosterscore)
+        baseline_scores.append(baselinescore)
 
-    return performance_booster, performance_baseline
+
+    return performance_booster, performance_baseline, booster_scores, baseline_scores, booster_accuracy_score
 
 
 def testNumLearners(Booster, Learner, data, start, end, inc, trials=1):
