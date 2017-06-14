@@ -15,6 +15,7 @@ class Perceptron(object):
         if set(classes) != set([-1.0, 1.0]):
             raise ValueError
         self.w = None
+        self.score = 0
 
     def reset(self, x):
         self.w = np.zeros(x.shape)
@@ -30,10 +31,14 @@ class Perceptron(object):
         return prod
 
     def predict(self, x):
-        if self.raw_predict(x) > 0.0:
+        self.score = self.raw_predict(x)
+        if self.score > 0.0:
             return 1.0
         return -1.0
 
     def partial_fit(self, x, y, sample_weight=1.0):
         if self.raw_predict(x) * y <= 0.0:
             self.w = self.w + sample_weight * y * x
+
+    def get_score(self):
+        return self.score

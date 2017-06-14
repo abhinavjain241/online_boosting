@@ -55,7 +55,7 @@ class OGBooster(object):
 
             # Update weight using loss function
             w = - OGBooster.dloss(label * F[m])
-            
+
     def predict(self, features):
         F = sum(h.predict(features) for h in self.f)
         self.F = F
@@ -67,7 +67,5 @@ class OGBooster(object):
             return 1.0
         return -1.0
 
-    # def score(self, x, y):
-        # from sklearn.metrics import accuracy_score
-        # print self.F
-        # return accuracy_score(self.y, self.predict(self.x), sample_weight=self.w)
+    def get_score(self):
+        return self.F

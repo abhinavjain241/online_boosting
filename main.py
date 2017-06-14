@@ -25,7 +25,7 @@ if __name__ == "__main__":
     weak_learner = get_weak_learner(args.weak_learner)
     data = load_data("data/" + args.dataset)
 
-    accuracy, baseline, boost_score, base_score, accuracy_scores = test(
+    accuracy, baseline, boost_score, base_score = test(
         ensembler, weak_learner, data, args.M, trials=args.trials)
 
     print "Accuracy:"
@@ -36,8 +36,8 @@ if __name__ == "__main__":
     print boost_score
     print "Baseline Scores:"
     print base_score
-    print "Sklearn accuracy_score"
-    print accuracy_scores
+    # print "Sklearn accuracy_score"
+    # print accuracy_scores
 
     if args.record:
         results = {
